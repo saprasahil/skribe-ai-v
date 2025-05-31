@@ -82,7 +82,7 @@ def save_as_docx(text):
 
 # Streamlit UI
 st.set_page_config(page_title="Skribe AI", layout="centered")
-st.title("📄 Skribe – AI Powered Job Application Assistant")
+st.title("🧠 Skribe – AI Powered Job Application Assistant")
 
 st.header("Step 1: Provide Job Description")
 input_method = st.radio("Provide job description:", ["Paste Text", "Upload File"])
