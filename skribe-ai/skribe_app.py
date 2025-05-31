@@ -5,14 +5,12 @@ import PyPDF2
 import io
 import os
 
-
-try: 
-    from dotenv import load_dotenv
+try:
+    from dotenv import load_dotenv  # type: ignore
     load_dotenv()
     api_key = os.getenv("OPENAI_API_KEY") or st.secrets["OPENAI_API_KEY"]
 except:
     api_key = st.secrets["OPENAI_API_KEY"]
-
 
 # Secure API key (loaded from env or Streamlit secrets)
 client = OpenAI(api_key=api_key)
@@ -43,7 +41,7 @@ def call_openai_gpt(prompt):
 def generate_cover_letter_gpt(job_desc, resume_text):
     prompt = f"""
 Write a personalized cover letter for this job description and resume.
-Make it 250–300 words, professional, and enthusiastic.
+Make it 250–300 words in 4 paragraphs from which third paragraph should have 3 pointers in it. It should be professional, and enthusiastic.
 
 Job Description:
 {job_desc}
@@ -53,16 +51,23 @@ Resume:
 """
     return call_openai_gpt(prompt)
 
-def tailor_resume_gpt(job_desc, resume_text):
+def suggest_resume_improvements(job_desc, resume_text):
     prompt = f"""
-Tailor this resume to better match the following job description.
-Edit the summary, skills, and experience sections as needed.
+You are an AI resume coach.
+
+A job seeker has shared their resume and a job description. Your task is to review the resume and suggest improvements 
+to make it more aligned to the job.
+
+❌ Do not rewrite the resume.
+✅ Provide 6 specific, actionable suggestions in plain English.
+
+Resume:
+{resume_text}
 
 Job Description:
 {job_desc}
 
-Resume:
-{resume_text}
+Suggestions:
 """
     return call_openai_gpt(prompt)
 
@@ -96,14 +101,16 @@ resume_text = ""
 if resume_file:
     resume_text = extract_text_from_file(resume_file)
 
-if st.button("✨ Generate Cover Letter & Tailored Resume"):
+if st.button("✨ Generate Cover Letter & Resume Suggestions"):
     if not job_description or not resume_text:
         st.error("Please provide both job description and resume.")
     else:
         with st.spinner("Generating with GPT-3.5..."):
             cover_letter = generate_cover_letter_gpt(job_description, resume_text)
-            tailored_resume = tailor_resume_gpt(job_description, resume_text)
+            resume_suggestions = suggest_resume_improvements(job_description, resume_text)
 
         st.success("✅ Documents ready!")
         st.download_button("📥 Download Cover Letter (DOCX)", save_as_docx(cover_letter), "cover_letter.docx")
-        st.download_button("📥 Download Tailored Resume (DOCX)", save_as_docx(tailored_resume), "tailored_resume.docx")
+
+        st.subheader("💡 Suggestions to Personalise Your Resume")
+        st.markdown(resume_suggestions)
