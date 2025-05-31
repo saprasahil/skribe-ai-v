@@ -86,7 +86,7 @@ st.title("🧠 Skribe")
 st.header("AI Powered Job Application Assistant")
 
 
-st.header("Step 1: Provide Job Description")
+st.header("⭐️Step 1: Provide Job Description")
 input_method = st.radio("Provide job description:", ["Paste Text", "Upload File"])
 job_description = ""
 
@@ -97,7 +97,7 @@ else:
     if job_file:
         job_description = extract_text_from_file(job_file)
 
-st.header("Step 2: Upload Your Resume")
+st.header("⭐️Step 2: Upload Your Resume")
 resume_file = st.file_uploader("Upload your resume (.pdf or .docx)", type=["pdf", "docx"])
 resume_text = ""
 if resume_file:
